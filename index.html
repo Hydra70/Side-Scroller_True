@@ -1,144 +1,132 @@
 <html>
   
   <head>
-    <script src="p5/p5.min.js"></script>
+    <script src="p5.min.js"></script>
+    <script src="p5.collide2d.min.js"></script>
+    <script src="jumper.js"></script>
+    <script src="obstacle.js"></script>
+    <script src="platform.js"></script>
     <style>
       body{
         overflow: hidden;
         padding: 0;
         margin: 0;
       }
-      .longitude{
-        color: white;
+      @font-face {
+        font-family: operator;
+        src = url(black-ops-one/blackopsone-regular.ttf);
       }
-      .lattitude{
-        color: white;
-      }
-      #location{
-        top: 0;
-        left: 0;
+      #kill{
+        z-index: 1;
         background-color: gray;
+        color: white;
         position: absolute;
       }
-      .longitude1{
-        color: white;
+      .mia{
+        color:white;
       }
-      .lattitude1{
+      #combatrating{
+        right: 0;
+        z-index: 1;
+        background-color: lime;
         color: white;
-      }
-      #eagle{
-        top: 0;
-        right:0;
+        font-family: operator;
         position: absolute;
       }
+      .comment{
+        font-weight: bold;
+      }
+      
     </style>
   </head>
   
   <body>
-    <div id="location">
-      <p id="longitude"></p>
-      <p id="lattitude"></p>
+    <div id="kill">
+      <h1 id="mia"></h1>
     </div>
-    <div id="eagle">
-      <img src="https://vignette.wikia.nocookie.net/aircraft/images/d/db/Clip-art-military-f-15-jet-top.gif/revision/latest?cb=20120601201429">
+    <div id="combatrating">
+      <h1 id="points"></h1>
+      <p id="comment"></p>
     </div>
     
     <script>
       var w = window.innerWidth;
       var h = window.innerHeight;
+      let hellbird;
       let img;
-      let striker;
-      let reaper;
-      var ball = new ball(); //create global object
-      var wingman = new wingman();
-      var d;
-      
+      var jumper = new jumper();
+      var obstacle = new obstacle();
+      var platform = new platform();
+      var hit = false;
+      var score = 0;
       
       function preload() {
-        img = loadImage('http://vignette1.wikia.nocookie.net/battlefield/images/2/2a/Battlefield_4_Siege_of_Shanghai_Overview.jpg/revision/latest?cb=20131128234418');
-        striker = loadImage('https://vignette.wikia.nocookie.net/aircraft/images/d/db/Clip-art-military-f-15-jet-top.gif/revision/latest?cb=20120601201429');
-        reaper = loadImage('https://b.kisscc0.com/20180705/ibe/kisscc0-airplane-aircraft-general-dynamics-f-16-fighting-f-f22-jet-5b3dd107c12413.9436462315307778637911.png');
+        hellbird = loadImage('https://derpicdn.net/img/2017/2/3/1354068/full.png');
+        img = loadImage('https://19mvmv3yn2qc2bdb912o1t2n-wpengine.netdna-ssl.com/conservancy/files/2016/02/10427741375_52786d80f5_k.jpg');
       }
+      
       function setup() {
         createCanvas(w,h);
+        imageMode(CENTER);
+        
       }
       
       function draw() {
-        background(img, 0);
-        image(striker,ball.x,ball.y);
-        striker.resize(50,75);
-        image(reaper,wingman.x,wingman.y);
-        reaper.resize(50,75);
-        ball.show();//create object1
-        ball.move();
-        //ball.position();
-        wingman.show();
-        wingman.move();
-        //code from reference
-        let x1 = ball.x;
-        let y1 = ball.y;
-        let x2 = wingman.x;
-        let y2 = wingman.y;
-        let d = int(dist(x1, y1, x2, y2));
-        if (d < 1) {
+        background(img);
+        image(img,w/2,h/2,w,h);
+        image(hellbird,jumper.x,jumper.y);
+        hellbird.resize(350,280);
+        //jumper.show();
+        jumper.update();
+        jumper.move();
+        obstacle.show();
+        obstacle.update();
+        platform.show();
+        
+        hit = collideRectCircle(obstacle.x,obstacle.y,80,40,jumper.x,jumper.y,50);
+        
+        if (hit === true) {
           noLoop();
-          window.alert("Mission Aborted : Aircraft Collision");
-        }
-      }
-      function ball() {//object1
-        this.x = 100;
-        this.y = 100;
-        //striker.x = 50;
-        //striker.y = 50;
-        this.show = function() {
-          fill(color('#000080'));
-          ellipse(this.x,this.y,50,50);
-          strokeWeight(0);
-        }
-        this.move = function() {
-          if (keyIsDown(65) && (this.x > 0)) {
-            this.x += -10;
+          document.getElementById('mia').innerHTML = "Game Over: Downed Bird"
+          if (score < 100) {
+            document.getElementById('comment').innerHTML = "C'mon, you can do better than this trainee!";
+            document.getElementById('points').innerHTML = "Combat Rating : " + score;
           }
-          if (keyIsDown(68) && (this.x < w)) {
-            this.x += 10;
-          }
-          if (keyIsDown(87) && (this.y > 0)) {
-            this.y += -10;
-          }
-          if (keyIsDown(83) && (this.y < h)) {
-            this.y += 10;
-          }
-          this.position = function() {
-            document.getElementById('longitude').innerHTML = this.x;
-            document.getElementById('lattitude').innerHTML = this.y;
+          else {
+            document.getElementById('comment').innerHTML = "We'll make a combat pilot out of you yet rookie.";
+            document.getElementById('points').innerHTML = "Combat Rating : " + score;
           }
         }
-      }
-      
-      function wingman() {//object2
-        this.x = 300;
-        this.y = 400;
-        this.show = function() {
-          fill(color('blue'));
-          ellipse(this.x,this.y,50,50);
-          strokeWeight(0);
+        
+        if (hit === false) {
+          score += 1;
+          document.getElementById('points').innerHTML = score;
+          obstacle.gravity -= 0.01;
+          if (obstacle.gravity == 1) {
+            obstacle.gravity += 0;
+          }
         }
-        this.move = function() {
-          if (keyIsDown(74) && (this.x > 0)) {
-            this.x += -10;
-          }
-          if (keyIsDown(76) && (this.x < w)) {
-            this.x += 10;
-          }
-          if (keyIsDown(73) && (this.y > 0)) {
-            this.y += -10;
-          }
-          if (keyIsDown(75) && (this.y < h)) {
-            this.y += 10;
-          }
+        
+        hit1 = collideRectCircle(platform.x,platform.y,100,50,jumper.x,jumper.y,50);
+        
+        if (hit1 === true) {
+          jumper.velocity = -5;
+        }
+        
+        if (jumper.y === h) {
+          score -= 20;
+          obstacle.gravity += 0.1;
         }
       }
       
+      function keyPressed() {
+        if (keyCode === 32) {
+          jumper.up();
+        }
+        if (keyCode === 82) {
+          location.reload(true);
+        }
+      }
     </script>
   </body>
 </html>
