@@ -1,0 +1,144 @@
+<html>
+  
+  <head>
+    <script src="p5/p5.min.js"></script>
+    <style>
+      body{
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      .longitude{
+        color: white;
+      }
+      .lattitude{
+        color: white;
+      }
+      #location{
+        top: 0;
+        left: 0;
+        background-color: gray;
+        position: absolute;
+      }
+      .longitude1{
+        color: white;
+      }
+      .lattitude1{
+        color: white;
+      }
+      #eagle{
+        top: 0;
+        right:0;
+        position: absolute;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div id="location">
+      <p id="longitude"></p>
+      <p id="lattitude"></p>
+    </div>
+    <div id="eagle">
+      <img src="https://vignette.wikia.nocookie.net/aircraft/images/d/db/Clip-art-military-f-15-jet-top.gif/revision/latest?cb=20120601201429">
+    </div>
+    
+    <script>
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      let img;
+      let striker;
+      let reaper;
+      var ball = new ball(); //create global object
+      var wingman = new wingman();
+      var d;
+      
+      
+      function preload() {
+        img = loadImage('http://vignette1.wikia.nocookie.net/battlefield/images/2/2a/Battlefield_4_Siege_of_Shanghai_Overview.jpg/revision/latest?cb=20131128234418');
+        striker = loadImage('https://vignette.wikia.nocookie.net/aircraft/images/d/db/Clip-art-military-f-15-jet-top.gif/revision/latest?cb=20120601201429');
+        reaper = loadImage('https://b.kisscc0.com/20180705/ibe/kisscc0-airplane-aircraft-general-dynamics-f-16-fighting-f-f22-jet-5b3dd107c12413.9436462315307778637911.png');
+      }
+      function setup() {
+        createCanvas(w,h);
+      }
+      
+      function draw() {
+        background(img, 0);
+        image(striker,ball.x,ball.y);
+        striker.resize(50,75);
+        image(reaper,wingman.x,wingman.y);
+        reaper.resize(50,75);
+        ball.show();//create object1
+        ball.move();
+        //ball.position();
+        wingman.show();
+        wingman.move();
+        //code from reference
+        let x1 = ball.x;
+        let y1 = ball.y;
+        let x2 = wingman.x;
+        let y2 = wingman.y;
+        let d = int(dist(x1, y1, x2, y2));
+        if (d < 1) {
+          noLoop();
+          window.alert("Mission Aborted : Aircraft Collision");
+        }
+      }
+      function ball() {//object1
+        this.x = 100;
+        this.y = 100;
+        //striker.x = 50;
+        //striker.y = 50;
+        this.show = function() {
+          fill(color('#000080'));
+          ellipse(this.x,this.y,50,50);
+          strokeWeight(0);
+        }
+        this.move = function() {
+          if (keyIsDown(65) && (this.x > 0)) {
+            this.x += -10;
+          }
+          if (keyIsDown(68) && (this.x < w)) {
+            this.x += 10;
+          }
+          if (keyIsDown(87) && (this.y > 0)) {
+            this.y += -10;
+          }
+          if (keyIsDown(83) && (this.y < h)) {
+            this.y += 10;
+          }
+          this.position = function() {
+            document.getElementById('longitude').innerHTML = this.x;
+            document.getElementById('lattitude').innerHTML = this.y;
+          }
+        }
+      }
+      
+      function wingman() {//object2
+        this.x = 300;
+        this.y = 400;
+        this.show = function() {
+          fill(color('blue'));
+          ellipse(this.x,this.y,50,50);
+          strokeWeight(0);
+        }
+        this.move = function() {
+          if (keyIsDown(74) && (this.x > 0)) {
+            this.x += -10;
+          }
+          if (keyIsDown(76) && (this.x < w)) {
+            this.x += 10;
+          }
+          if (keyIsDown(73) && (this.y > 0)) {
+            this.y += -10;
+          }
+          if (keyIsDown(75) && (this.y < h)) {
+            this.y += 10;
+          }
+        }
+      }
+      
+    </script>
+  </body>
+</html>
