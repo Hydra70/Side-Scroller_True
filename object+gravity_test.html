@@ -1,0 +1,132 @@
+<html>
+  
+  <head>
+    <script src="p5/p5.min.js"></script>
+    <script src="p5.collide2D-master/p5.collide2d.min.js"></script>
+    <script src="jumper.js"></script>
+    <script src="obstacle.js"></script>
+    <script src="platform.js"></script>
+    <style>
+      body{
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      @font-face {
+        font-family: operator;
+        src = url(black-ops-one/blackopsone-regular.ttf);
+      }
+      #kill{
+        z-index: 1;
+        background-color: gray;
+        color: white;
+        position: absolute;
+      }
+      .mia{
+        color:white;
+      }
+      #combatrating{
+        right: 0;
+        z-index: 1;
+        background-color: lime;
+        color: white;
+        font-family: operator;
+        position: absolute;
+      }
+      .comment{
+        font-weight: bold;
+      }
+      
+    </style>
+  </head>
+  
+  <body>
+    <div id="kill">
+      <h1 id="mia"></h1>
+    </div>
+    <div id="combatrating">
+      <h1 id="points"></h1>
+      <p id="comment"></p>
+    </div>
+    
+    <script>
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      let hellbird;
+      let img;
+      var jumper = new jumper();
+      var obstacle = new obstacle();
+      var platform = new platform();
+      var hit = false;
+      var score = 0;
+      
+      function preload() {
+        hellbird = loadImage('https://derpicdn.net/img/2017/2/3/1354068/full.png');
+        img = loadImage('https://19mvmv3yn2qc2bdb912o1t2n-wpengine.netdna-ssl.com/conservancy/files/2016/02/10427741375_52786d80f5_k.jpg');
+      }
+      
+      function setup() {
+        createCanvas(w,h);
+        imageMode(CENTER);
+        
+      }
+      
+      function draw() {
+        background(img);
+        image(img,w/2,h/2,w,h);
+        image(hellbird,jumper.x,jumper.y);
+        hellbird.resize(350,280);
+        //jumper.show();
+        jumper.update();
+        jumper.move();
+        obstacle.show();
+        obstacle.update();
+        platform.show();
+        
+        hit = collideRectCircle(obstacle.x,obstacle.y,80,40,jumper.x,jumper.y,50);
+        
+        if (hit === true) {
+          noLoop();
+          document.getElementById('mia').innerHTML = "Game Over: Downed Bird"
+          if (score < 100) {
+            document.getElementById('comment').innerHTML = "C'mon, you can do better than this trainee!";
+            document.getElementById('points').innerHTML = "Combat Rating : " + score;
+          }
+          else {
+            document.getElementById('comment').innerHTML = "We'll make a combat pilot out of you yet rookie.";
+            document.getElementById('points').innerHTML = "Combat Rating : " + score;
+          }
+        }
+        
+        if (hit === false) {
+          score += 1;
+          document.getElementById('points').innerHTML = score;
+          obstacle.gravity -= 0.01;
+          if (obstacle.gravity == 1) {
+            obstacle.gravity += 0;
+          }
+        }
+        
+        hit1 = collideRectCircle(platform.x,platform.y,100,50,jumper.x,jumper.y,50);
+        
+        if (hit1 === true) {
+          jumper.velocity = -5;
+        }
+        
+        if (jumper.y === h) {
+          score -= 20;
+          obstacle.gravity += 0.1;
+        }
+      }
+      
+      function keyPressed() {
+        if (keyCode === 32) {
+          jumper.up();
+        }
+        if (keyCode === 82) {
+          location.reload(true);
+        }
+      }
+    </script>
+  </body>
+</html>
