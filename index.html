@@ -36,7 +36,9 @@
       .comment{
         font-weight: bold;
       }
-      
+      .glide{
+        font-weight: bold;
+      }
     </style>
   </head>
   
@@ -47,13 +49,17 @@
     <div id="combatrating">
       <h1 id="points"></h1>
       <p id="comment"></p>
+      <p id="glide"></p>
     </div>
+    
     
     <script>
       var w = window.innerWidth;
       var h = window.innerHeight;
       let hellbird;
       let img;
+      let boom;
+      //let deck;
       var jumper = new jumper();
       var obstacle = new obstacle();
       var platform = new platform();
@@ -63,6 +69,8 @@
       function preload() {
         hellbird = loadImage('https://derpicdn.net/img/2017/2/3/1354068/full.png');
         img = loadImage('https://19mvmv3yn2qc2bdb912o1t2n-wpengine.netdna-ssl.com/conservancy/files/2016/02/10427741375_52786d80f5_k.jpg');
+        boom = loadImage('https://staticcrate.com/content/video-pro/FootageCrate-4K_Large_Aerial_Explosion_5.png');
+        //deck = loadImage('https://image.spreadshirtmedia.net/image-server/v1/mp/designs/16331066,width=178,height=178,version=1432671410/sukhoi-su-27.png');
       }
       
       function setup() {
@@ -83,11 +91,21 @@
         obstacle.update();
         platform.show();
         
+        let x1 = jumper.x;
+        let y1 = jumper.y;
+        let x2 = obstacle.x;
+        let y2 = obstacle.y;
+        let d = int(dist(x1, y1, x2, y2));
+        if (d > 0){
+         score += 1;
+        }
+        
         hit = collideRectCircle(obstacle.x,obstacle.y,80,40,jumper.x,jumper.y,50);
         
         if (hit === true) {
           noLoop();
           document.getElementById('mia').innerHTML = "Game Over: Downed Bird"
+          hellbird = image(boom,jumper.x,jumper.y,1078,600);
           if (score < 100) {
             document.getElementById('comment').innerHTML = "C'mon, you can do better than this trainee!";
             document.getElementById('points').innerHTML = "Combat Rating : " + score;
@@ -98,8 +116,8 @@
           }
         }
         
-        if (hit === false) {
-          score += 1;
+        if (hit === false){
+          //score += 1;
           document.getElementById('points').innerHTML = score;
           obstacle.gravity -= 0.01;
           if (obstacle.gravity == 1) {
@@ -107,17 +125,17 @@
           }
         }
         
-        hit1 = collideRectCircle(platform.x,platform.y,100,50,jumper.x,jumper.y,50);
+        hit1 = collideRectCircle(platform.x,platform.y,600,130,jumper.x,jumper.y,50);
         
         if (hit1 === true) {
           jumper.velocity = -5;
         }
         
         if (jumper.y === h) {
-          document.getElementById('comment').innerHTML = "You're too low bring the plane up.";
+          document.getElementById('glide').innerHTML = "You're too low bring the plane up.";
         }
         else {
-          document.getElementById('comment').innerHTML = "";
+          document.getElementById('glide').innerHTML = "";
         }
       }
       
