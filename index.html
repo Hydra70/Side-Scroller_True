@@ -114,8 +114,10 @@
         }
         
         if (jumper.y === h) {
-          score -= 20;
-          obstacle.gravity += 0.1;
+          document.getElementById('comment').innerHTML = "You're too low bring the plane up.";
+        }
+        else {
+          document.getElementById('comment').innerHTML = "";
         }
       }
       
