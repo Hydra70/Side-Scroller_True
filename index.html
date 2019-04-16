@@ -39,6 +39,15 @@
       .glide{
         font-weight: bold;
       }
+      #controls{
+        top: 80vh;
+        left:0vw;
+        z-index: 6;
+        color: white;
+        font-weight: bold;
+        font-size: 15px;
+        position: absolute;
+      }
     </style>
   </head>
   
@@ -51,7 +60,11 @@
       <p id="comment"></p>
       <p id="glide"></p>
     </div>
-    
+    <div id="controls">
+      <p>A = Move Left</p>
+      <p>D = Move Right</p>
+      <p>Spacebar = Jump/Fly</p>
+    </div>
     
     <script>
       var w = window.innerWidth;
