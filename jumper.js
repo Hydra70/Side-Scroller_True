@@ -37,11 +37,5 @@ function jumper() {
           if (keyIsDown(68) && (this.x < w)) {
             this.x += 10;
           }
-          if (keyIsDown(87) && (this.y > 0)) {
-            this.y += -10;
-          }
-          if (keyIsDown(83) && (this.y < h)) {
-            this.y += 10;
-          }
         }
       }
