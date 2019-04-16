@@ -59,7 +59,7 @@
       let hellbird;
       let img;
       let boom;
-      //let deck;
+      let deck;
       var jumper = new jumper();
       var obstacle = new obstacle();
       var platform = new platform();
@@ -70,7 +70,7 @@
         hellbird = loadImage('https://derpicdn.net/img/2017/2/3/1354068/full.png');
         img = loadImage('https://19mvmv3yn2qc2bdb912o1t2n-wpengine.netdna-ssl.com/conservancy/files/2016/02/10427741375_52786d80f5_k.jpg');
         boom = loadImage('https://staticcrate.com/content/video-pro/FootageCrate-4K_Large_Aerial_Explosion_5.png');
-        //deck = loadImage('https://image.spreadshirtmedia.net/image-server/v1/mp/designs/16331066,width=178,height=178,version=1432671410/sukhoi-su-27.png');
+        deck = loadImage('http://4.bp.blogspot.com/-gHguQKtRjac/TnzTeHtX30I/AAAAAAAACW0/cQzwIu9DWXY/s1600/Russian+aircraft+carrier+Admiral+Kuznetsov+Admiral+Flota+Sovetskovo+Soyuza+Kuznetsov+Sukhoi+Su-33+Flanker-D+MiG-29K+Varyag+Su-27K+j-15+russian+navy+plan+%25284%2529.jpg');
       }
       
       function setup() {
@@ -90,7 +90,7 @@
         obstacle.show();
         obstacle.update();
         platform.show();
-        
+        /*
         let x1 = jumper.x;
         let y1 = jumper.y;
         let x2 = obstacle.x;
@@ -98,6 +98,14 @@
         let d = int(dist(x1, y1, x2, y2));
         if (d > 0){
          score += 1;
+        }*/
+        
+        
+        if (jumper.y === h) {
+          document.getElementById('glide').innerHTML = "You're too low bring the plane up.";
+        }
+        else {
+          document.getElementById('glide').innerHTML = "";
         }
         
         hit = collideRectCircle(obstacle.x,obstacle.y,80,40,jumper.x,jumper.y,50);
@@ -116,8 +124,8 @@
           }
         }
         
-        if (hit === false){
-          //score += 1;
+        if ((hit === false) && (obstacle.x < 0)){
+          score += 1;
           document.getElementById('points').innerHTML = score;
           obstacle.gravity -= 0.01;
           if (obstacle.gravity == 1) {
@@ -130,12 +138,11 @@
         if (hit1 === true) {
           jumper.velocity = -5;
         }
-        
-        if (jumper.y === h) {
-          document.getElementById('glide').innerHTML = "You're too low bring the plane up.";
-        }
-        else {
-          document.getElementById('glide').innerHTML = "";
+        else if (score >= 1000) {
+          noLoop();
+          img = image(deck,w/2,h/2,w,h);
+          document.getElementById('comment').innerHTML = "Well done, you managed to land the plane!";
+          document.getElementById('points').innerHTML = "Combat Rating : " + score;
         }
       }
       
