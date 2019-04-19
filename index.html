@@ -1,8 +1,9 @@
 <html>
   
   <head>
-    <script src="p5.min.js"></script>
-    <script src="p5.collide2d.min.js"></script>
+    <script src="p5/p5.min.js"></script>
+    <script src="p5.collide2D-master/p5.collide2d.min.js"></script>
+    <script src="lib/p5.sound.js"></script>
     <script src="jumper.js"></script>
     <script src="obstacle.js"></script>
     <script src="platform.js"></script>
@@ -39,7 +40,7 @@
       .glide{
         font-weight: bold;
       }
-      #controls{
+      #instructions{
         top: 80vh;
         left:0vw;
         z-index: 6;
@@ -60,12 +61,26 @@
       <p id="comment"></p>
       <p id="glide"></p>
     </div>
-    <div id="controls">
+    <div id="instructions">
       <p>A = Move Left</p>
       <p>D = Move Right</p>
       <p>Spacebar = Jump/Fly</p>
       <p>R = Restart</p>
+      
+    <audio autoplay loop preload="auto" style=" width:300px;" id="tape1">
+	<source src="http://66.90.93.122/ost/top-gun-fire-at-will-playstation/ztrlonlwmb/Top%20Gun%20-%20Highway%20to%20the%20Danger%20Zone%20%28Remix%29%20by%20Mary%20Elizabeth%20McGlynn.mp3" type="audio/mpeg">
+	Your browser does not support the audio element.
+</audio>
+<audio autoplay loop preload="auto" style=" width:300px;" id="tape2">
+	<source src="http://66.90.93.122/ost/top-gun-hard-lock-original-soundtrack/kggbcjzafu/06%20Top%20Gun%20Anthem%20%28Remix%29.mp3" type="audio/mpeg">
+	Your browser does not support the audio element.
+</audio>
+<audio autoplay loop preload="auto" style=" width:300px;" id="tape3">
+	<source src="http://66.90.93.122/ost/medal-of-honor-airborne/fxzevaaj/01%20Medal%20of%20Honor-%20Airborne%20%28Main%20Theme%29.mp3" type="audio/mpeg">
+	Your browser does not support the audio element.
+</audio>
     </div>
+
     
     <script>
       var w = window.innerWidth;
@@ -79,23 +94,29 @@
       var platform = new platform();
       var hit = false;
       var score = 0;
+      var musicscore1 = document.getElementById('tape1');
+      var musicscore2 = document.getElementById('tape2');
+      var musicscore3 = document.getElementById('tape3');
       
       function preload() {
         hellbird = loadImage('https://derpicdn.net/img/2017/2/3/1354068/full.png');
         img = loadImage('https://19mvmv3yn2qc2bdb912o1t2n-wpengine.netdna-ssl.com/conservancy/files/2016/02/10427741375_52786d80f5_k.jpg');
         boom = loadImage('https://staticcrate.com/content/video-pro/FootageCrate-4K_Large_Aerial_Explosion_5.png');
         deck = loadImage('http://4.bp.blogspot.com/-gHguQKtRjac/TnzTeHtX30I/AAAAAAAACW0/cQzwIu9DWXY/s1600/Russian+aircraft+carrier+Admiral+Kuznetsov+Admiral+Flota+Sovetskovo+Soyuza+Kuznetsov+Sukhoi+Su-33+Flanker-D+MiG-29K+Varyag+Su-27K+j-15+russian+navy+plan+%25284%2529.jpg');
+        
       }
       
       function setup() {
         createCanvas(w,h);
         imageMode(CENTER);
-        
       }
       
       function draw() {
         background(img);
         image(img,w/2,h/2,w,h);
+        musicscore1.play();
+        musicscore2.pause();
+        musicscore3.pause();
         image(hellbird,jumper.x,jumper.y);
         hellbird.resize(350,280);
         //jumper.show();
@@ -128,6 +149,8 @@
           noLoop();
           document.getElementById('mia').innerHTML = "Game Over: Downed Bird"
           hellbird = image(boom,jumper.x,jumper.y,1078,600);
+          musicscore1.pause();
+          musicscore3.play();
           if (score < 100) {
             document.getElementById('comment').innerHTML = "C'mon, you can do better than this trainee!";
             document.getElementById('points').innerHTML = "Combat Rating : " + score;
@@ -157,6 +180,8 @@
           img = image(deck,w/2,h/2,w,h);
           document.getElementById('comment').innerHTML = "Well done, you managed to land the plane!";
           document.getElementById('points').innerHTML = "Combat Rating : " + score;
+          musicscore2.play();
+          musicscore1.pause();
         }
       }
       
