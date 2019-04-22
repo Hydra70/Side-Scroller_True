@@ -62,8 +62,8 @@
       <p id="glide"></p>
     </div>
     <div id="instructions">
-      <p>A = Move Left</p>
-      <p>D = Move Right</p>
+      <p>A = Move Left;   P = Pause Game</p>
+      <p>D = Move Right;  T = Resume Game</p>
       <p>Spacebar = Jump/Fly</p>
       <p>R = Restart</p>
       
@@ -191,6 +191,12 @@
         }
         if (keyCode === 82) {
           location.reload(true);
+        }
+        if (keyCode === 80) {
+          noLoop();
+        }
+        if (keyCode === 84) {
+          loop();
         }
       }
     </script>
